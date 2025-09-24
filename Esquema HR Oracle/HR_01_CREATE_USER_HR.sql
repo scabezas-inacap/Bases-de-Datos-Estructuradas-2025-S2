@@ -12,3 +12,4 @@ GRANT CREATE SEQUENCE TO hr;       -- puede crear secuencias
 GRANT CREATE PROCEDURE TO hr;      -- puede crear procedimientos
 GRANT CREATE TRIGGER TO hr;        -- puede crear triggers
 GRANT CREATE TYPE TO hr;           -- puede crear tipos de datos
+ALTER USER hr QUOTA 100M ON USERS;
