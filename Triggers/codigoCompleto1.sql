@@ -90,3 +90,78 @@ EXCEPTION
         DBMS_OUTPUT.PUT_LINE('Error al crear categoria');
         RETURN 0;
 END;
+
+
+CREATE OR REPLACE FUNCTION FX_CATEGORIA_DELETE 
+    (p_id IN NUMBER) RETURN NUMBER IS
+BEGIN
+    UPDATE foro_categoria SET activo = 0 WHERE id = p_id;
+    RETURN 1;
+EXCEPTION
+    WHEN OTHERS THEN
+        DBMS_OUTPUT.PUT_LINE('Error al eliminar (apagar) categoria');
+        RETURN 0;
+END;
+
+CREATE OR REPLACE FUNCTION FX_CATEGORIA_REACTIVATE 
+    (p_id IN NUMBER) RETURN NUMBER IS
+BEGIN
+    UPDATE foro_categoria SET activo = 1 WHERE id = p_id;
+    RETURN 1;
+EXCEPTION
+    WHEN OTHERS THEN
+        DBMS_OUTPUT.PUT_LINE('Error al eliminar (apagar) categoria');
+        RETURN 0;
+END;
+
+-- HACIENDO FUNCIONAR LA FUNCION ALMACENADA
+SET SERVEROUTPUT ON;
+BEGIN
+    -- Llama a la función que actualiza ACTIVO = 0
+    IF FX_CATEGORIA_DELETE(3) = 1 THEN
+        DBMS_OUTPUT.PUT_LINE('Categoria desactivada (Borrado Logico) correctamente.');
+    ELSE
+        DBMS_OUTPUT.PUT_LINE('Error al ejecutar el borrado logico para categoria.');
+    END IF;
+END;
+/
+
+BEGIN
+    -- Llama a la función que actualiza ACTIVO = 0
+    IF FX_CATEGORIA_REACTIVATE(3) = 1 THEN
+        DBMS_OUTPUT.PUT_LINE('Categoria REactivada (encendido Logico) correctamente.');
+    ELSE
+        DBMS_OUTPUT.PUT_LINE('Error al ejecutar el encendido logico para categoria.');
+    END IF;
+END;
+/
+
+-- TRIGGER
+
+CREATE OR REPLACE TRIGGER trg_categoria_delete
+BEFORE DELETE ON foro_categoria
+FOR EACH ROW
+DECLARE
+    -- 1. Declara esto como una transacción autónoma
+    PRAGMA AUTONOMOUS_TRANSACTION;
+    
+    v_resultado NUMBER;
+BEGIN
+    -- 2. Ejecuta tu función (que hace el UPDATE)
+    -- Esto funciona porque está en una transacción separada.
+    v_resultado := FX_CATEGORIA_DELETE(:OLD.id);
+
+    -- 3. CONFIRMA (COMMIT) la transacción autónoma
+    -- Esto guarda inmediatamente el cambio de activo = 0.
+    COMMIT;
+
+    -- 4. Cancela la operación DELETE original (que ya no se necesita)
+    -- El borrado lógico ya se hizo y se guardó.
+    RAISE_APPLICATION_ERROR(-20001, 'Borrado Logico: El registro (ID: ' || :OLD.id || ') se ha desactivado (activo = 0). La eliminacion fisica fue prevenida.');
+END;
+/
+
+-- TEST
+DELETE FROM foro_categoria WHERE id = 3;
+
+SELECT id, activo FROM foro_categoria;
