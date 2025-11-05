@@ -75,6 +75,8 @@ VALUES (SEQ_FORO_COMENTARIO.NEXTVAL, 1, 'Si es flotante, está en el agua', 4, 1
 INSERT INTO foro_comentario (id, entrada_id, texto, usuario_id, activo)
 VALUES (SEQ_FORO_COMENTARIO.NEXTVAL, 1, 'Me aburro, prefiero jugar en el telefono', 5, 1);
 
+commit;
+
 CREATE OR REPLACE FUNCTION FX_CATEGORIA_ADD 
     (p_titulo IN VARCHAR2, p_descripcion IN VARCHAR2, p_super IN NUMBER) RETURN NUMBER IS
 BEGIN
