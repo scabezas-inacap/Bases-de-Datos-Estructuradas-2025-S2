@@ -226,3 +226,86 @@ EXCEPTION
 END;
 /
 ```
+
+------
+
+# Implementación de Funciones
+
+## Obtener todos los registros
+```sql
+SET SERVEROUTPUT ON;
+
+DECLARE
+    -- Variables para almacenar los datos del cursor
+    v_mi_cursor SYS_REFCURSOR;
+    v_id            foro_categoria.id%TYPE;
+    v_nombre        foro_categoria.nombre%TYPE;
+    v_descripcion   foro_categoria.descripcion%TYPE;
+    v_super_id      foro_categoria.super_id%TYPE;
+    v_activo        foro_categoria.activo%TYPE;
+BEGIN
+    -- 1. Obtener el cursor desde la función
+    v_mi_cursor := FX_CATEGORIA_GET_ALL();
+
+    -- 2. Recorrer (loop) el cursor para leer sus datos
+    LOOP
+        -- 3. Cargar la fila actual en las variables
+        FETCH v_mi_cursor INTO v_id, v_nombre, v_descripcion, v_super_id, v_activo;
+        
+        -- 4. Salir del loop cuando no queden más filas
+        EXIT WHEN v_mi_cursor%NOTFOUND;
+
+        -- 5. Imprimir los resultados
+        DBMS_OUTPUT.PUT_LINE('ID: ' || v_id || ' - Nombre: ' || v_nombre);
+    END LOOP;
+
+    -- 6. Cerrar el cursor
+    CLOSE v_mi_cursor;
+EXCEPTION
+    WHEN OTHERS THEN
+        IF v_mi_cursor%ISOPEN THEN
+            CLOSE v_mi_cursor;
+        END IF;
+        RAISE;
+END;
+/
+```
+## Obtener todos datos de un registro
+```sql
+SET SERVEROUTPUT ON;
+
+DECLARE
+    -- Variables para almacenar los datos del cursor
+    v_mi_cursor SYS_REFCURSOR;
+    v_id            foro_categoria.id%TYPE;
+    v_nombre        foro_categoria.nombre%TYPE;
+    v_descripcion   foro_categoria.descripcion%TYPE;
+    v_super_id      foro_categoria.super_id%TYPE;
+    v_activo        foro_categoria.activo%TYPE;
+BEGIN
+    -- 1. Obtener el cursor desde la función
+    v_mi_cursor := FX_CATEGORIA_GET_BY_ID(1);
+
+    -- 2. Recorrer (loop) el cursor para leer sus datos
+    LOOP
+        -- 3. Cargar la fila actual en las variables
+        FETCH v_mi_cursor INTO v_id, v_nombre, v_descripcion, v_super_id, v_activo;
+        
+        -- 4. Salir del loop cuando no queden más filas
+        EXIT WHEN v_mi_cursor%NOTFOUND;
+
+        -- 5. Imprimir los resultados
+        DBMS_OUTPUT.PUT_LINE('ID: ' || v_id || ' - Nombre: ' || v_nombre);
+    END LOOP;
+
+    -- 6. Cerrar el cursor
+    CLOSE v_mi_cursor;
+EXCEPTION
+    WHEN OTHERS THEN
+        IF v_mi_cursor%ISOPEN THEN
+            CLOSE v_mi_cursor;
+        END IF;
+        RAISE;
+END;
+/
+```
