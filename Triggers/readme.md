@@ -49,7 +49,7 @@ Este ejercicio es ideal para un laboratorio o evaluación, ya que requiere crear
 
 ### 🎯 Objetivo del Ejercicio
 
-Crear un **Trigger AFTER INSERT OR UPDATE** a nivel de fila que registre automáticamente en una tabla de auditoría (`LOG_EMPLEADOS`) los cambios de salario realizados a cualquier empleado, guardando el valor **antiguo** y el valor **nuevo** del salario, además de quién y cuándo se realizó el cambio.
+Crear un **Trigger BEFORE DELETE** a nivel de fila que registre automáticamente cuando se quiere eliminar un registro, se utilice la función almacenada y retorne un error.
 
 ### 🛠️ Pasos del Ejercicio
 
