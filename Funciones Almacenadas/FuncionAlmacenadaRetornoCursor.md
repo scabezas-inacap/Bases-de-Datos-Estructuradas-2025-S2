@@ -42,8 +42,8 @@ BEGIN
     v_cursor_employees := FX_EMPLEADOS_GET_ALL();
     
     DBMS_OUTPUT.PUT_LINE('--- Datos de Empleados (Esquema HR) ---');
-    DBMS_OUTPUT.PUT_LINE('ID | Salario | Puesto');
-    DBMS_OUTPUT.PUT_LINE('------------------------------------');
+    DBMS_OUTPUT.PUT_LINE('ID  | Salario  | Puesto');
+    DBMS_OUTPUT.PUT_LINE('-------------------------');
     
     -- *************************************************
     -- PASO 2: Itera sobre el cursor usando FETCH y LOOP
@@ -58,7 +58,7 @@ BEGIN
         -- Muestra los datos por consola
         DBMS_OUTPUT.PUT_LINE(
             RPAD(v_empleado_id, 3) || ' | ' || 
-            RPAD(v_sueldo, 7)      || ' | ' || 
+            RPAD(v_sueldo, 8)      || ' | ' || 
             v_trabajo_id
         );
     END LOOP;
